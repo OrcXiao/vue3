@@ -16,7 +16,7 @@
 
 <script lang="ts">
   import {defineComponent, reactive, PropType, onMounted} from 'vue'
-  import {emitter} from './ValidateForm.vue'
+  import emitter from './ValidateForm.vue'
 
   interface RuleProp {
     type: 'required' | 'email' | 'password';
@@ -24,6 +24,7 @@
   }
 
   export type RulesProp = RuleProp[];
+  export type TagType = 'input' | 'textarea';
 
   const emailReg = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
 

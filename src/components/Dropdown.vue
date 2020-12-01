@@ -22,8 +22,8 @@
       }
     },
     setup() {
-      const dropdownRef = ref<null | HTMLElement>(null);
       const isOpen = ref(false);
+      const dropdownRef = ref<null | HTMLElement>(null);
       const toggleOpen = () => {
         isOpen.value = !isOpen.value;
       };
