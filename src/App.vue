@@ -1,36 +1,6 @@
 <template>
   <div id="app" class="container">
     <global-header :user="currentUser"></global-header>
-
-    <!--
-        <validate-form @form-submit="onFormSubmit">
-          <div class="mb-3">
-            <label class="form-label">邮箱地址</label>
-            <validate-input
-              type="text"
-              :rules="emailRules"
-              placeholder="请输入邮箱"
-              v-model="emailVal">
-            </validate-input>
-            <div>{{emailVal}}</div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">登录密码</label>
-            <validate-input
-              type="password"
-              :rules="passRules"
-              placeholder="请输入密码"
-              v-model="passVal">
-            </validate-input>
-          </div>
-          <template #submit>
-            <span class="btn btn-danger">
-              提交
-            </span>
-          </template>
-        </validate-form>
-    -->
     <router-view></router-view>
     <footer class="text-center py-4 text-secondary bg-light mt-6">
       <small>
@@ -47,17 +17,13 @@
 </template>
 
 <script lang="ts">
-  import {defineComponent, ref} from 'vue';
+  import {defineComponent, ref, computed} from 'vue';
   import 'bootstrap/dist/css/bootstrap.min.css';
   import ColumnList, {ColumnProps} from "@/components/ColumnList.vue";
-  import GlobalHeader, {UserProps} from '@/components/GlobalHeader.vue';
-  import ValidateInput, {RulesProp} from "@/components/ValidateInput.vue";
+  import GlobalHeader from '@/components/GlobalHeader.vue';
+  import ValidateInput from "@/components/ValidateInput.vue";
   import ValidateForm from "@/components/ValidateForm.vue";
-
-  const currentUser: UserProps = {
-    isLogin: false,
-    name: ''
-  };
+  import {useStore} from 'vuex'
 
   const testData: ColumnProps[] = [
     {
@@ -84,47 +50,28 @@
       description: 'test2的专栏, 这是一段又有趣的专栏'
     },
   ];
-
-  const emailRules: RulesProp = [
-    {
-      type: 'required',
-      message: '电子邮箱不能为空',
-    },
-    {
-      type: 'email',
-      message: '请输入正确的电子邮箱',
-    },
-  ];
-  const passRules: RulesProp = [
-    {
-      type: 'required',
-      message: '密码不能为空',
-    },
-    {
-      type: 'password',
-      message: '至少输入6位字符',
-    },
-  ];
   export default defineComponent({
     name: 'App',
     components: {
+      // eslint-disable-next-line vue/no-unused-components
       ColumnList,
       GlobalHeader,
+      // eslint-disable-next-line vue/no-unused-components
       ValidateInput,
+      // eslint-disable-next-line vue/no-unused-components
       ValidateForm,
     },
     setup() {
-      let emailVal = ref('');
-      let passVal = ref('');
-
-      const onFormSubmit = (result: Boolean) => {
+      const emailVal = ref('');
+      const passVal = ref('');
+      const store = useStore();
+      const currentUser = computed(() => store.state.user);
+      const onFormSubmit = (result: boolean) => {
         console.log(1234, result);
       };
       return {
         list: testData,
         currentUser,
-        emailRules,
-        passRules,
         emailVal,
         passVal,
         onFormSubmit,

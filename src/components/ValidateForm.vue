@@ -13,7 +13,7 @@
   import {defineComponent, onUnmounted} from 'vue'
   import mitt from 'mitt'
 
-  type ValidateFunc = () => Boolean;
+  type ValidateFunc = () => boolean;
   export const emitter = mitt();
   export default defineComponent({
     name: 'ValidateForm',
@@ -21,7 +21,7 @@
     setup(props, context) {
       let funcArr: ValidateFunc[] = [];
       const submitForm = () => {
-        let result = funcArr.map(func => func()).every(result => result);
+        const result = funcArr.map(func => func()).every(result => result);
         context.emit('form-submit', result);
       };
 
