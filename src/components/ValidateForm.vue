@@ -29,10 +29,10 @@
         funcArr.push(func);
       };
 
-      emitter.on('from-item-crated', callback);
+      emitter.on('from-item-created', callback);
 
       onUnmounted(() => {
-        emitter.off('from-item-crated', callback);
+        emitter.off('from-item-created', callback);
         funcArr = [];
       });
       return {

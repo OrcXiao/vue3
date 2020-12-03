@@ -4,20 +4,23 @@
     <validate-form @form-submit="onFormSubmit">
       <div class="mb-3">
         <label class="form-label">文章标题 :</label>
-        <validata-input
+        <validate-input
           :rule="titleRules"
           v-model="titleVal"
           placeholder="请输入文章标题"
+          tag="input"
           type="text">
-        </validata-input>
+        </validate-input>
       </div>
       <div class="mb-3">
         <label class="form-label">文章详情 :</label>
-        <validata-input
+        <validate-input
           :rule="contentRules"
+          tag="textarea"
+          row="20"
           v-model="contentVal"
           placeholder="请输入文章详情">
-        </validata-input>
+        </validate-input>
       </div>
       <template #submit>
         <button class="btn btn-primary btn-large">发布文章</button>

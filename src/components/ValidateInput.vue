@@ -1,22 +1,29 @@
 <template>
   <div class="validate-input-container pb-3">
     <input
-      v-bind="$attrs"
-      type="text"
+      v-if="tag !== 'textarea'"
+      class="form-control"
       :class="{'is-invalid': inputRef.error}"
-      :value="inputRef.value"
       @blur="validateInput"
-      @input="updateValue"
-      class="form-control">
-    <span v-if="inputRef.error" class="invalid-feedback">
-      {{inputRef.message}}
-    </span>
+      v-model="inputRef.val"
+      v-bind="$attrs"
+    >
+    <textarea
+      v-else
+      class="form-control"
+      :class="{'is-invalid': inputRef.error}"
+      @blur="validateInput"
+      v-model="inputRef.val"
+      v-bind="$attrs"
+    >
+    </textarea>
+    <span v-if="inputRef.error" class="invalid-feedback">{{inputRef.message}}</span>
   </div>
 </template>
 
 <script lang="ts">
   import {defineComponent, reactive, PropType, onMounted} from 'vue'
-  import emitter from './ValidateForm.vue'
+  import {emitter} from './ValidateForm.vue'
 
   interface RuleProp {
     type: 'required' | 'email' | 'password';
@@ -32,7 +39,11 @@
     name: 'ValidateInput',
     props: {
       rules: Array as PropType<RulesProp>,
-      modelValue: String
+      modelValue: String,
+      tag: {
+        type: String as PropType<TagType>,
+        default: 'input'
+      }
     },
     inheritAttrs: false,
     setup(props, context) {
@@ -73,7 +84,7 @@
         }
       };
       onMounted(() => {
-        emitter.emit('from-item-crated', validateInput)
+        emitter.emit('from-item-created', validateInput)
       });
       return {
         inputRef,
