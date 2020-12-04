@@ -1,4 +1,4 @@
-import {createStore} from 'vuex'
+import {createStore, Commit} from 'vuex'
 import axios from 'axios';
 
 export interface UserProps {
@@ -32,20 +32,35 @@ export interface PostProps {
 }
 
 export interface GlobalDataProps {
+  token: string;
   columns: ColumnProps[];
   posts: PostProps[];
   user: UserProps;
+  loading: boolean;
 }
+
+const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
+  const {data} = await axios.get(url);
+  commit(mutationName, data);
+};
+
+const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
+  const {data} = await axios.post(url, payload);
+  commit(mutationName, data);
+  return data
+};
 
 const store = createStore<GlobalDataProps>({
   state: {
+    token: '',
     columns: [],
     posts: [],
     user: {
-      isLogin: true,
+      isLogin: false,
       name: 'OrcXiao',
       columnId: 1,
-    }
+    },
+    loading: false,
   },
   getters: {
     getColumnById: (state) => (id: string) => {
@@ -57,13 +72,13 @@ const store = createStore<GlobalDataProps>({
 
   },
   mutations: {
-    login(state) {
-      state.user = {
-        ...state.user,
-        isLogin: true,
-        name: 'OrcXiao'
-      }
-    },
+    // login(state) {
+    //   state.user = {
+    //     ...state.user,
+    //     isLogin: true,
+    //     name: 'OrcXiao'
+    //   }
+    // },
     createPost(state, newPost) {
       state.posts.push(newPost);
     },
@@ -72,28 +87,31 @@ const store = createStore<GlobalDataProps>({
     },
     fetchColumn(state, data) {
       state.columns = [data.data];
-      console.log(state.columns);
     },
     fetchPosts(state, data) {
       state.posts = data.data.list;
     },
+    setLoading(state, data) {
+      state.loading = data;
+    },
+    login(state, data) {
+      state.token = data.data.token;
+    }
   },
   actions: {
-    fetchColumns(context) {
-      axios.get('/columns').then(res => {
-        context.commit('fetchColumns', res.data);
-      })
+    fetchColumns({commit}) {
+      getAndCommit('/columns', 'fetchColumns', commit)
     },
     fetchColumn({commit}, cid) {
-      axios.get(`/columns/${cid}`).then(res => {
-        commit('fetchColumn', res.data)
-      })
+      getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
     },
     fetchPosts({commit}, cid) {
-      axios.get(`/columns/${cid}/posts`).then(res => {
-        commit('fetchPosts', res.data)
-      })
+      getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit)
+    },
+    login({commit}, payload) {
+      return postAndCommit('/user/login', 'login', commit, payload);
     }
+
   }
 });
 

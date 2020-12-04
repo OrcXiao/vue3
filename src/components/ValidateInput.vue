@@ -48,13 +48,13 @@
     inheritAttrs: false,
     setup(props, context) {
       const inputRef = reactive({
-        value: props.modelValue || '',
+        val: props.modelValue || '',
         error: false,
         message: '',
       });
       const updateValue = (e: KeyboardEvent) => {
         const targetValue = (e.target as HTMLInputElement).value;
-        inputRef.value = targetValue;
+        inputRef.val = targetValue;
         context.emit('update:modelValue', targetValue);
       };
       const validateInput = () => {
@@ -64,13 +64,13 @@
             inputRef.message = rule.message;
             switch (rule.type) {
               case 'required':
-                passed = (inputRef.value.trim() !== '');
+                passed = (inputRef.val.trim() !== '');
                 break;
               case 'email':
-                passed = emailReg.test(inputRef.value);
+                passed = emailReg.test(inputRef.val);
                 break;
               case 'password':
-                passed = (inputRef.value.length >= 6);
+                passed = (inputRef.val.length >= 6);
                 break;
               default:
                 break;
@@ -98,3 +98,4 @@
 <style scoped>
 
 </style>
+

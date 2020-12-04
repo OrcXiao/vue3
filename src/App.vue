@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="container">
     <global-header :user="currentUser"></global-header>
+    <loader v-if="isloading" text="拼命加载中" background="rgba(0,0,0,0.8)"></loader>
     <router-view></router-view>
     <footer class="text-center py-4 text-secondary bg-light mt-6">
       <small>
@@ -21,27 +22,25 @@
   import 'bootstrap/dist/css/bootstrap.min.css';
   import GlobalHeader from '@/components/GlobalHeader.vue';
   import {useStore} from 'vuex'
+  import Loader from "@/components/Loader.vue";
 
   export default defineComponent({
     name: 'App',
     components: {
       GlobalHeader,
-
+      Loader,
     },
     setup() {
       const emailVal = ref('');
       const passVal = ref('');
       const store = useStore();
       const currentUser = computed(() => store.state.user);
-      const onFormSubmit = (result: boolean) => {
-        console.log(1)
-      };
+      const isloading = computed(() => store.state.loading);
       return {
-
         currentUser,
+        isloading,
         emailVal,
         passVal,
-        onFormSubmit,
       }
     }
   })
