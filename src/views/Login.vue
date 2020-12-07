@@ -41,14 +41,14 @@
       ValidateForm
     },
     setup() {
-      const emailVal = ref('')
-      const router = useRouter()
-      const store = useStore()
+      const emailVal = ref('');
+      const router = useRouter();
+      const store = useStore();
       const emailRules: RulesProp = [
         {type: 'required', message: '电子邮箱地址不能为空'},
         {type: 'email', message: '请输入正确的电子邮箱格式'}
       ]
-      const passwordVal = ref('')
+      const passwordVal = ref('');
       const passwordRules: RulesProp = [
         {type: 'required', message: '密码不能为空'}
       ];
@@ -60,6 +60,8 @@
           };
           store.dispatch('loginAndFetch', payload).then(data => {
             router.push('/');
+          }).catch(err => {
+            console.log(err);
           })
         }
       };
