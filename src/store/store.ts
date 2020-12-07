@@ -2,10 +2,11 @@ import {createStore, Commit} from 'vuex'
 import axios from 'axios';
 
 export interface UserProps {
-  isLogin: boolean,
-  name?: string,
-  id?: number,
-  columnId?: number
+  isLogin: boolean;
+  nickName?: string;
+  _id?: string;
+  column?: string;
+  email?: string;
 }
 
 interface ImageProps {
@@ -52,13 +53,11 @@ const postAndCommit = async (url: string, mutationName: string, commit: Commit, 
 
 const store = createStore<GlobalDataProps>({
   state: {
-    token: '',
+    token: localStorage.getItem('token') || '',
     columns: [],
     posts: [],
     user: {
       isLogin: false,
-      name: 'OrcXiao',
-      columnId: 1,
     },
     loading: false,
   },
@@ -72,13 +71,6 @@ const store = createStore<GlobalDataProps>({
 
   },
   mutations: {
-    // login(state) {
-    //   state.user = {
-    //     ...state.user,
-    //     isLogin: true,
-    //     name: 'OrcXiao'
-    //   }
-    // },
     createPost(state, newPost) {
       state.posts.push(newPost);
     },
@@ -94,9 +86,15 @@ const store = createStore<GlobalDataProps>({
     setLoading(state, data) {
       state.loading = data;
     },
+    fetchCurrentUser(state, data) {
+      state.user = {isLogin: true, ...data.data};
+    },
     login(state, data) {
-      state.token = data.data.token;
-    }
+      const {token} = data.data;
+      state.token = token;
+      localStorage.setItem('token', token);
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`
+    },
   },
   actions: {
     fetchColumns({commit}) {
@@ -108,10 +106,17 @@ const store = createStore<GlobalDataProps>({
     fetchPosts({commit}, cid) {
       getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit)
     },
+    fetchCurrentUser({commit}) {
+      getAndCommit('/user/current', 'fetchCurrentUser', commit);
+    },
     login({commit}, payload) {
       return postAndCommit('/user/login', 'login', commit, payload);
+    },
+    loginAndFetch({dispatch}, data) {
+      return dispatch('login', data).then(() => {
+        return dispatch('fetchCurrentUser')
+      })
     }
-
   }
 });
 
