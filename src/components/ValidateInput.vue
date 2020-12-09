@@ -25,9 +25,10 @@
   import {defineComponent, reactive, PropType, onMounted} from 'vue'
   import {emitter} from './ValidateForm.vue'
 
-  interface RuleProp {
-    type: 'required' | 'email' | 'password';
+  export interface RuleProp {
+    type: 'required' | 'email' | 'password' | 'custom';
     message: string;
+    validate?: () => boolean;
   }
 
   export type RulesProp = RuleProp[];
@@ -71,6 +72,9 @@
                 break;
               case 'password':
                 passed = (inputRef.val.length >= 6);
+                break;
+              case 'custom':
+                passed = rule.validate ? rule.validate() : true;
                 break;
               default:
                 break;

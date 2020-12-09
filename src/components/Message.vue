@@ -1,5 +1,5 @@
 <template>
-  <teleport>
+  <teleport to="#message">
     <div class="alert message-info fixed-top w-50 mx-auto d-flex justify-content-between mt-2"
          :class="classObject" v-if="isVisible">
       <span>{{message}}</span>

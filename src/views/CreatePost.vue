@@ -36,7 +36,7 @@
   import ValidateInput, {RulesProp} from '../components/ValidateInput.vue'
   import {useRouter} from 'vue-router'
   import {useStore} from 'vuex'
-  import {PostProps} from "@/testData";
+  import {PostProps} from "@/store/store";
 
   export default defineComponent({
     name: "CreatePost",
@@ -58,17 +58,15 @@
 
       const onFormSubmit = (result: boolean) => {
         if (result) {
-          const {columnId} = store.state.user;
-          if (columnId) {
+          const {column} = store.state.user;
+          if (column) {
             const newPost: PostProps = {
-              id: new Date().getTime(),
               title: titleVal.value,
               content: contentVal.value,
-              columnId,
-              createdAt: new Date().toLocaleString()
+              column,
             };
             store.commit('createPost', newPost);
-            router.push({name: 'column', params: {id: columnId}})
+            router.push({name: 'column', params: {id: column}})
           }
         }
       };
