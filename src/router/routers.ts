@@ -62,7 +62,7 @@ router.beforeEach((to, form, next) => {
           next()
         }
       }).catch(() => {
-        localStorage.removeItem('token');
+        store.commit('logout');
         next('login');
       })
 
